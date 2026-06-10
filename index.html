@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ใบสมัครงาน – ร้านยาศรีสุพรรณ</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Noto+Serif+Thai:wght@400;600;700&display=swap');
+
+  :root {
+    --purple-dark: #4a3575;
+    --purple-mid: #7c5cbf;
+    --purple-light: #c5aff0;
+    --purple-pale: #f0ebfa;
+    --purple-ghost: #faf8fe;
+    --ink: #1e1533;
+    --ink-soft: #4a4260;
+    --line: #ddd4f0;
+    --white: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Sarabun', sans-serif;
+    background: #e8e2f5;
+    color: var(--ink);
+    font-size: 14px;
+  }
+
+  /* ── NAV BAR (screen only) ── */
+  .nav-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: var(--purple-dark);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    box-shadow: 0 2px 12px rgba(74,53,117,.35);
+    gap: 12px;
+  }
+  .nav-title {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .nav-btn {
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.3);
+    color: #fff;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 14px;
+    padding: 5px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .nav-btn:hover { background: rgba(255,255,255,.28); }
+  .nav-btn:disabled { opacity: .35; cursor: default; }
+  .nav-counter {
+    font-size: 13px;
+    white-space: nowrap;
+    opacity: .85;
+  }
+  .print-btn {
+    background: var(--purple-light);
+    border: none;
+    color: var(--purple-dark);
+    font-family: 'Sarabun', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 5px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: opacity .15s;
+  }
+  .print-btn:hover { opacity: .85; }
+
+  /* ── CANVAS ── */
+  .canvas {
+    padding: 60px 20px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  /* ── A4 PAGE ── */
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    background: var(--white);
+    box-shadow: 0 4px 24px rgba(74,53,117,.18);
+    border-radius: 3px;
+    padding: 16mm 16mm 14mm;
+    display: none;
+    flex-direction: column;
+    position: relative;
+    page-break-after: always;
+  }
+  .page.active { display: flex; }
+
+  /* PAGE HEADER */
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    border-bottom: 2.5px solid var(--purple-dark);
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+    gap: 12px;
+  }
+  .store-name {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--purple-dark);
+    line-height: 1.2;
+  }
+  .doc-label {
+    font-size: 11px;
+    color: var(--ink-soft);
+    margin-top: 3px;
+  }
+  .header-badge {
+    background: var(--purple-pale);
+    border: 1px solid var(--purple-light);
+    border-radius: 6px;
+    padding: 6px 12px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .header-badge .app-no {
+    font-size: 10px;
+    color: var(--ink-soft);
+  }
+  .header-badge .app-date {
+    font-size: 11px;
+    color: var(--purple-dark);
+    font-weight: 600;
+  }
+
+  /* APPLICANT HERO */
+  .hero {
+    background: var(--purple-pale);
+    border-left: 4px solid var(--purple-mid);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .hero-avatar {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: var(--purple-light);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 20px;
+    color: var(--purple-dark);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .hero-name {
+    font-family: 'Noto Serif Thai', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--purple-dark);
+  }
+  .hero-nickname {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 1px;
+  }
+  .hero-salary {
+    margin-left: auto;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .salary-label { font-size: 10px; color: var(--ink-soft); }
+  .salary-val {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--purple-mid);
+  }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--purple-mid);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+  }
+
+  /* GRID FIELDS */
+  .field-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px 14px;
+  }
+  .field-grid.two-col { grid-template-columns: repeat(2, 1fr); }
+  .field-grid.four-col { grid-template-columns: repeat(4, 1fr); }
+
+  .field { display: flex; flex-direction: column; gap: 2px; }
+  .field-label {
+    font-size: 9.5px;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+  .field-value {
+    font-size: 12px;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .field-value.mono { font-family: monospace; font-size: 11.5px; }
+
+  /* SKILL PILLS */
+  .skill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 2px;
+  }
+  .pill {
+    font-size: 10.5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+  .pill-yes {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #a5d6a7;
+  }
+  .pill-no {
+    background: #fce4ec;
+    color: #b71c1c;
+    border: 1px solid #ef9a9a;
+  }
+
+  /* EXPERIENCE BLOCK */
+  .exp-block {
+    background: var(--purple-ghost);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 11.5px;
+    line-height: 1.7;
+    color: var(--ink);
+    white-space: pre-line;
+  }
+
+  /* MOTTO / INTRO */
+  .quote-block {
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-style: italic;
+    line-height: 1.6;
+    padding-left: 10px;
+    border-left: 3px solid var(--purple-light);
+  }
+
+  /* SIGNATURE SECTION */
+  .sig-section {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px dashed var(--line);
+  }
+  .sig-statement {
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    text-align: center;
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  .sig-boxes {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+  }
+  .sig-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 140px;
+  }
+  .sig-line {
+    width: 140px;
+    border-bottom: 1.5px solid var(--ink);
+  }
+  .sig-caption {
+    font-size: 10px;
+    color: var(--ink-soft);
+    text-align: center;
+    line-height: 1.5;
+  }
+  .sig-space { height: 36px; }
+
+  /* PAGE FOOTER */
+  .page-footer {
+    position: absolute;
+    bottom: 8mm;
+    left: 16mm; right: 16mm;
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: #bbb;
+  }
+
+  /* ── PRINT STYLES ── */
+  @media print {
+    body { background: white; }
+    .nav-bar { display: none !important; }
+    .canvas { padding: 0; gap: 0; }
+    .page {
+      display: flex !important;
+      box-shadow: none;
+      border-radius: 0;
+      page-break-after: always;
+      break-after: page;
+    }
+  }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV BAR -->
+<div class="nav-bar" id="navbar">
+  <div class="nav-title">ใบสมัครงาน – ร้านยาศรีสุพรรณ</div>
+  <div class="nav-controls">
+    <button class="nav-btn" id="prevBtn" onclick="navigate(-1)">◀ ก่อนหน้า</button>
+    <span class="nav-counter" id="counter">1 / 6</span>
+    <button class="nav-btn" id="nextBtn" onclick="navigate(1)">ถัดไป ▶</button>
+    <button class="print-btn" onclick="printCurrent()">🖨 พิมพ์ / PDF</button>
+  </div>
+</div>
+
+<div class="canvas" id="canvas">
+
+<!-- ════════════════════════════════════════════════════ PAGE 1 -->
+<div class="page active" id="page-0">
+  <div class="page-header">
+    <div>
+      <div class="store-name">ร้านยาศรีสุพรรณ</div>
+      <div class="doc-label">ใบสมัครงาน · แบบฟอร์มรายงานผู้สมัคร</div>
+    </div>
+    <div class="header-badge">
+      <div class="app-no">ผู้สมัครลำดับที่ 1</div>
+      <div class="app-date">9 มิถุนายน 2569</div>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-avatar">ห</div>
+    <div>
+      <div class="hero-name">น.ส. รัตติกาล ทอนทอง</div>
+      <div class="hero-nickname">ชื่อเล่น: หมิว</div>
+    </div>
+    <div class="hero-salary">
+      <div class="salary-label">เงินเดือนที่คาดหวัง</div>
+      <div class="salary-val">12,000 บาท</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ข้อมูลส่วนตัว</div>
+    <div class="field-grid">
+      <div class="field"><div class="field-label">วันเดือนปีเกิด</div><div class="field-value">5 มิถุนายน 2544 (อายุ 25 ปี)</div></div>
+      <div class="field"><div class="field-label">สถานภาพ</div><div class="field-value">โสด · ไม่มีบุตร</div></div>
+      <div class="field"><div class="field-label">วุฒิการศึกษา</div><div class="field-value">มัธยมศึกษาตอนปลาย</div></div>
+      <div class="field"><div class="field-label">ที่อยู่ปัจจุบัน</div><div class="field-value">บ้านยางกุด ศรีสะเกษ</div></div>
+      <div class="field"><div class="field-label">การเดินทาง</div><div class="field-value">รถจักรยานยนต์</div></div>
+      <div class="field"><div class="field-label">เบอร์โทร</div><div class="field-value mono">095-124-7824</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ผู้ติดต่อฉุกเฉิน</div>
+    <div class="field-grid two-col">
+      <div class="field"><div class="field-label">ชื่อผู้ติดต่อ</div><div class="field-value">น้อง (พี่น้อง)</div></div>
+      <div class="field"><div class="field-label">เบอร์โทร</div><div class="field-value mono">064-402-5052</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ประสบการณ์การทำงาน</div>
+    <div class="exp-block">• อาสาสมัครบริบาลท้องถิ่น
+• ร้านทำเล็บ</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ทักษะ</div>
+    <div class="skill-row">
+      <span class="pill pill-yes">✓ คอมพิวเตอร์พื้นฐาน</span>
+      <span class="pill pill-yes">✓ Excel / Word</span>
+      <span class="pill pill-yes">✓ ทำความสะอาดทั่วไป</span>
+      <span class="pill pill-yes">✓ ภาษาอังกฤษ</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">คติประจำใจ</div>
+    <div class="quote-block">ตั้งใจทำงานให้ดีที่สุด เรียนรู้และพัฒนาตนเองอยู่เสมอ</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">แนะนำตนเอง</div>
+    <div class="quote-block">สวัสดีฉันชื่อ น.ส รัตติกาล ทอนทอง ฉันเรียนป.ตรีจบปีนี้ คณะสาธารณสุขศาสตร์ ฉันอยากหาประสบการณ์ทำงาน</div>
+  </div>
+
+  <div class="sig-section">
+    <div class="sig-statement">ข้าพเจ้าขอรับรองว่าข้อมูลที่ให้ไว้ในใบสมัครนี้เป็นความจริงทุกประการ<br>หากพบในภายหลังว่าข้อมูลเป็นเท็จ ข้าพเจ้ายินยอมให้บริษัทยกเลิกการว่าจ้างได้ทันที</div>
+    <div class="sig-boxes">
+      <div class="sig-box">
+        <div class="sig-space"></div>
+        <div class="sig-line"></div>
+        <div class="sig-caption">ลายมือชื่อผู้สมัคร<br>(น.ส. รัตติกาล ทอนทอง)</div>
+      </div>
+      <div class="sig-box">
+        <div class="sig-space"></div>
+        <div class="sig-line"></div>
+        <div class="sig-caption">ลายมือชื่อผู้รับสมัคร<br>วันที่ ............................................</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>ร้านยาศรีสุพรรณ · เอกสารลับ</span>
+    <span>ผู้สมัคร 1/6</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ PAGE 2 -->
+<div class="page" id="page-1">
+  <div class="page-header">
+    <div>
+      <div class="store-name">ร้านยาศรีสุพรรณ</div>
+      <div class="doc-label">ใบสมัครงาน · แบบฟอร์มรายงานผู้สมัคร</div>
+    </div>
+    <div class="header-badge">
+      <div class="app-no">ผู้สมัครลำดับที่ 2</div>
+      <div class="app-date">9 มิถุนายน 2569</div>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-avatar">ห</div>
+    <div>
+      <div class="hero-name">นาง ภิรมย์ ฉิมวารี</div>
+      <div class="hero-nickname">ชื่อเล่น: หนู</div>
+    </div>
+    <div class="hero-salary">
+      <div class="salary-label">เงินเดือนที่คาดหวัง</div>
+      <div class="salary-val">10,000 บาท / ตามโครงสร้าง</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ข้อมูลส่วนตัว</div>
+    <div class="field-grid">
+      <div class="field"><div class="field-label">วันเดือนปีเกิด</div><div class="field-value">27 สิงหาคม 2530 (อายุ 38 ปี)</div></div>
+      <div class="field"><div class="field-label">สถานภาพ</div><div class="field-value">สมรส · มีบุตร</div></div>
+      <div class="field"><div class="field-label">วุฒิการศึกษา</div><div class="field-value">ปวช / ปวส</div></div>
+      <div class="field"><div class="field-label">ที่อยู่ปัจจุบัน</div><div class="field-value">1210/45 ซ.ขุขันธุ์2 ต.เมืองเหนือ อ.เมือง จ.ศรีสะเกษ 33000</div></div>
+      <div class="field"><div class="field-label">การเดินทาง</div><div class="field-value">รถจักรยานยนต์ส่วนตัว</div></div>
+      <div class="field"><div class="field-label">เบอร์โทร</div><div class="field-value mono">083-507-5556</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ผู้ติดต่อฉุกเฉิน</div>
+    <div class="field-grid two-col">
+      <div class="field"><div class="field-label">ชื่อผู้ติดต่อ</div><div class="field-value">นายวัศพล ชูรัตน์ (บิดา/มารดา)</div></div>
+      <div class="field"><div class="field-label">เบอร์โทร</div><div class="field-value mono">065-803-8317</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ประสบการณ์การทำงาน</div>
+    <div class="exp-block">บจก.แทนคุณสมุนไพร – ลูกค้าสัมพันธ์ / ผู้ช่วยผู้จัดการ
+• ประสานงานลูกค้าร้านยาและร้านจำหน่ายสมุนไพร
+• รับรายการสั่งซื้อ จัดสินค้าเพื่อเตรียมจัดส่ง
+• ออกใบเสนอราคา ใบวางบิล ใบเสร็จรับเงิน
+• สั่งซื้อสินค้าเมื่อสต็อกเหลือน้อย รับสินค้าเข้าสต็อก
+• คีย์ใบรายการสั่งซื้อเข้าระบบ ตรวจนับสต็อกสินค้าคงเหลือ</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ทักษะ</div>
+    <div class="skill-row">
+      <span class="pill pill-yes">✓ คอมพิวเตอร์พื้นฐาน</span>
+      <span class="pill pill-yes">✓ Excel / Word</span>
+      <span class="pill pill-yes">✓ ทำความสะอาดทั่วไป</span>
+      <span class="pill pill-yes">✓ ภาษาอังกฤษ</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">คติประจำใจ</div>
+    <div class="quote-block">ทำวันนี้ให้ดีที่สุด และเต็มที่ที่สุด</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">แนะนำตนเอง</div>
+    <div class="quote-block">เป็นคนที่เรียนรู้งานไวค่ะ มีความกระตือรือร้นตื่นตัวในการทำงาน คล่องแคล่ว รับฟังความเห็นของผู้อื่น เป็นคนที่สามารถเก็บอารมณ์ได้ดี ยิ้มแย้มแจ่มใส่ ชอบงานบริการและงานขายมากๆค่ะ</div>
+  </div>
+
+  <div class="sig-section">
+    <div class="sig-statement">ข้าพเจ้าขอรับรองว่าข้อมูลที่ให้ไว้ในใบสมัครนี้เป็นความจริงทุกประการ<br>หากพบในภายหลังว่าข้อมูลเป็นเท็จ ข้าพเจ้ายินยอมให้บริษัทยกเลิกการว่าจ้างได้ทันที</div>
+    <div class="sig-boxes">
+      <div class="sig-box">
+        <div class="sig-space"></div>
+        <div class="sig-line"></div>
+        <div class="sig-caption">ลายมือชื่อผู้สมัคร<br>(นาง ภิรมย์ ฉิมวารี)</div>
+      </div>
+      <div class="sig-box">
+        <div class="sig-space"></div>
+        <div class="sig-line"></div>
+        <div class="sig-caption">ลายมือชื่อผู้รับสมัคร<br>วันที่ ............................................</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>ร้านยาศรีสุพรรณ · เอกสารลับ</span>
+    <span>ผู้สมัคร 2/6</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ PAGE 3 -->
+<div class="page" id="page-2">
+  <div class="page-header">
+    <div>
+      <div class="store-name">ร้านยาศรีสุพรรณ</div>
+      <div class="doc-label">ใบสมัครงาน · แบบฟอร์มรายงานผู้สมัคร</div>
+    </div>
+    <div class="header-badge">
+      <div class="app-no">ผู้สมัครลำดับที่ 3</div>
+      <div class="app-date">9 มิถุนายน 2569</div>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-avatar">แ</div>
+    <div>
+      <div class="hero-name">น.ส. ปานชนก สองบุญ</div>
+      <div class="hero-nickname">ชื่อเล่น: แพร</div>
+    </div>
+    <div class="hero-salary">
+      <div class="salary-label">เงินเดือนที่คาดหวัง</div>
+      <div class="salary-val">12,000 – 13,000 บาท</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ข้อมูลส่วนตัว</div>
+    <div class="field-grid">
+      <div class="field"><div class="field-label">วันเดือนปีเกิด</div><div class="field-value">5 พฤษภาคม 2538 (อายุ 31 ปี)</div></div>
+      <div class="field"><div class="field-label">สถานภาพ</div><div class="field-value">สมรส · ไม่มีบุตร</div></div>
+      <div class="field"><div class="field-label">วุฒิการศึกษา</div><div class="field-value">ปวช / ปวส</div></div>
+      <div class="field"><div class="field-label">ที่อยู่ปัจจุบัน</div><div class="field-value">366/22 แฟลตเคหะ ถ.กวงเฮง ต.เมืองใต้ อ.เมืองศรีสะเกษ 33000</div></div>
+      <div class="field"><div class="field-label">การเดินทาง</div><div class="field-value">รถจักรยานยนต์</div></div>
+      <div class="field"><div class="field-label">เบอร์โทร</div><div class="field-value mono">092-364-9985</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ผู้ติดต่อฉุกเฉิน</div>
+    <div class="field-grid two-col">
+      <div class="field"><div class="field-label">ชื่อผู้ติดต่อ</div><div class="field-value">นายณัฐวุฒิ สองบุญ (สามี)</div></div>
+      <div class="field"><div class="field-label">เบอร์โทร</div><div class="field-value mono">088-085-6122</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ประสบการณ์การทำงาน</div>
+    <div class="exp-block">คลินิกนีโอ – ผู้ช่วยทันตแพทย์ + ผู้จัดการ
+• ช่วยงานข้างเก้าอี้หมอ
+
+ร้านทองใบกรุงเทพ – ผู้ช่วยผู้จัดการ
+• ขายทอง + สรุปยอดประจำวัน</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ทักษะ</div>
+    <div class="skill-row">
+      <span class="pill pill-yes">✓ คอมพิวเตอร์พื้นฐาน</span>
+      <span class="pill pill-yes">✓ Excel / Word</span>
+      <span class="pill pill-yes">✓ ทำความสะอาดทั่วไป</span>
+      <span class="pill pill-yes">✓ ภาษาอังกฤษ</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">คติประจำใจ</div>
+    <div class="quote-block">ซื่อสัตย์ ตรงต่อเวลา รับผิดชอบหน้าที่ของตนให้ดีที่สุด</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">แนะนำตนเอง</div>
+    <div class="quote-block">ไม่เคยเกี่ยงงาน หากได้รับมอบหมาย จะทำอย่างเต็มที่ ไม่ให้ส่งผลเสียกับงาน</div>
+  </div>
+
+  <div class="sig-section">
+    <div class="sig-statement">ข้าพเจ้าขอรับรองว่าข้อมูลที่ให้ไว้ในใบสมัครนี้เป็นความจริงทุกประการ<br>หากพบในภายหลังว่าข้อมูลเป็นเท็จ ข้าพเจ้ายินยอมให้บริษัทยกเลิกการว่าจ้างได้ทันที</div>
+    <div class="sig-boxes">
+      <div class="sig-box">
+        <div class="sig-space"></div>
+        <div class="sig-line"></div>
+        <div class="sig-caption">ลายมือชื่อผู้สมัคร<br>(น.ส. ปานชนก สองบุญ)</div>
+      </div>
+      <div class="sig-box">
+        <div class="sig-space"></div>
+        <div class="sig-line"></div>
+        <div class="sig-caption">ลายมือชื่อผู้รับสมัคร<br>วันที่ ............................................</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>ร้านยาศรีสุพรรณ · เอกสารลับ</span>
+    <span>ผู้สมัคร 3/6</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ PAGE 4 -->
+<div class="page" id="page-3">
+  <div class="page-header">
+    <div>
+      <div class="store-name">ร้านยาศรีสุพรรณ</div>
+      <div class="doc-label">ใบสมัครงาน · แบบฟอร์มรายงานผู้สมัคร</div>
+    </div>
+    <div class="header-badge">
+      <div class="app-no">ผู้สมัครลำดับที่ 4</div>
+      <div class="app-date">9 มิถุนายน 2569</div>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-avatar">โ</div>
+    <div>
+      <div class="hero-name">น.ส. สิราวรรณ พิกุล</div>
+      <div class="hero-nickname">ชื่อเล่น: โดนัท</div>
+    </div>
+    <div class="hero-salary">
+      <div class="salary-label">เงินเดือนที่คาดหวัง</div>
+      <div class="salary-val">10,000+ บาท</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ข้อมูลส่วนตัว</div>
+    <div class="field-grid">
+      <div class="field"><div class="field-label">วันเดือนปีเกิด</div><div class="field-value">11 พฤศจิกายน 2547 (อายุ 21 ปี)</div></div>
+      <div class="field"><div class="field-label">สถานภาพ</div><div class="field-value">โสด · ไม่มีบุตร</div></div>
+      <div class="field"><div class="field-label">วุฒิการศึกษา</div><div class="field-value">ปวช / ปวส</div></div>
+      <div class="field"><div class="field-label">ที่อยู่ปัจจุบัน</div><div class="field-value">บ้านใหม่ 41 ม.1 ต.น้ำคำ อ.เมือง จ.ศรีสะเกษ</div></div>
+      <div class="field"><div class="field-label">การเดินทาง</div><div class="field-value">รถจักรยานยนต์</div></div>
+      <div class="field"><div class="field-label">เบอร์โทร</div><div class="field-value mono">065-025-7882</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ผู้ติดต่อฉุกเฉิน</div>
+    <div class="field-grid two-col">
+      <div class="field"><div class="field-label">ชื่อผู้ติดต่อ</div><div class="field-value">นางมณีวรรณ พิกุล (บิดา/มารดา)</div></div>
+      <div class="field"><div class="field-label">เบอร์โทร</div><div class="field-value mono">095-762-6761</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ประสบการณ์การทำงาน</div>
+    <div class="exp-block">บริษัทอลาสกัน – แอดมิน
+• ตอบแชท ให้บริการทางออนไลน์ เติมเกม กรอกข้อมูลลูกค้าผ่าน Google Sheet
+
+บริษัทเดอะโกเก็ทเทอร์สจำกัด – แอดมิน
+• ตอบแชท แนะนำอาหารเสริม เชียร์ขายสินค้าออนไลน์ กรอกข้อมูลยอดขายรายวัน
+
+ร้านเตมิกคาเฟ่ – เสิร์ฟ
+• รับออเดอร์ เก็บโต๊ะ</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ทักษะ</div>
+    <div class="skill-row">
+      <span class="pill pill-yes">✓ คอมพิวเตอร์พื้นฐาน</span>
+      <span class="pill pill-yes">✓ Excel / Word</span>
+      <span class="pill pill-yes">✓ ทำความสะอาดทั่วไป</span>
+      <span class="pill pill-no">✗ ภาษาอังกฤษ</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">คติประจำใจ</div>
+    <div class="quote-block">ทำหน้าที่ที่ได้รับมอบหมายให้ดีที่สุด ยิ้มบ่อยๆ</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">แนะนำตนเอง</div>
+    <div class="quote-block">หนูชื่อโดนัท ตัวสูงค่อนข้างผอม ชอบกินมัทฉะมาก หนูพร้อมที่จะเรียนรู้งาน ตั้งใจ (อ่านภาษาอังกฤษได้ แต่แปลไม่ได้ พูดได้พื้นฐาน)</div>
+  </div>
+
+  <div class="sig-section">
+    <div class="sig-statement">ข้าพเจ้าขอรับรองว่าข้อมูลที่ให้ไว้ในใบสมัครนี้เป็นความจริงทุกประการ<br>หากพบในภายหลังว่าข้อมูลเป็นเท็จ ข้าพเจ้ายินยอมให้บริษัทยกเลิกการว่าจ้างได้ทันที</div>
+    <div class="sig-boxes">
+      <div class="sig-box">
+        <div class="sig-space"></div>
+        <div class="sig-line"></div>
+        <div class="sig-caption">ลายมือชื่อผู้สมัคร<br>(น.ส. สิราวรรณ พิกุล)</div>
+      </div>
+      <div class="sig-box">
+        <div class="sig-space"></div>
+        <div class="sig-line"></div>
+        <div class="sig-caption">ลายมือชื่อผู้รับสมัคร<br>วันที่ ............................................</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>ร้านยาศรีสุพรรณ · เอกสารลับ</span>
+    <span>ผู้สมัคร 4/6</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ PAGE 5 -->
+<div class="page" id="page-4">
+  <div class="page-header">
+    <div>
+      <div class="store-name">ร้านยาศรีสุพรรณ</div>
+      <div class="doc-label">ใบสมัครงาน · แบบฟอร์มรายงานผู้สมัคร</div>
+    </div>
+    <div class="header-badge">
+      <div class="app-no">ผู้สมัครลำดับที่ 5</div>
+      <div class="app-date">9 มิถุนายน 2569</div>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-avatar">เ</div>
+    <div>
+      <div class="hero-name">น.ส. พรชิตา สุขพราว</div>
+      <div class="hero-nickname">ชื่อเล่น: เบ็นซ์</div>
+    </div>
+    <div class="hero-salary">
+      <div class="salary-label">เงินเดือนที่คาดหวัง</div>
+      <div class="salary-val">12,000 บาท</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ข้อมูลส่วนตัว</div>
+    <div class="field-grid">
+      <div class="field"><div class="field-label">วันเดือนปีเกิด</div><div class="field-value">26 กันยายน 2543 (อายุ 25 ปี)</div></div>
+      <div class="field"><div class="field-label">สถานภาพ</div><div class="field-value">โสด · ไม่มีบุตร</div></div>
+      <div class="field"><div class="field-label">วุฒิการศึกษา</div><div class="field-value">มัธยมศึกษาตอนปลาย</div></div>
+      <div class="field"><div class="field-label">ที่อยู่ปัจจุบัน</div><div class="field-value">225 ม.11 ต.น้ำคำ อ.เมือง จ.ศรีสะเกษ 33000</div></div>
+      <div class="field"><div class="field-label">การเดินทาง</div><div class="field-value">มอเตอร์ไซค์</div></div>
+      <div class="field"><div class="field-label">เบอร์โทร</div><div class="field-value mono">082-153-4608</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ผู้ติดต่อฉุกเฉิน</div>
+    <div class="field-grid two-col">
+      <div class="field"><div class="field-label">ชื่อผู้ติดต่อ</div><div class="field-value">นายธนโชติ แสนแก้วใส (แฟน)</div></div>
+      <div class="field"><div class="field-label">เบอร์โทร</div><div class="field-value mono">082-153-4608</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ประสบการณ์การทำงาน</div>
+    <div class="exp-block">• เสมียนบัญชี</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ทักษะ</div>
+    <div class="skill-row">
+      <span class="pill pill-yes">✓ คอมพิวเตอร์พื้นฐาน</span>
+      <span class="pill pill-yes">✓ Excel / Word</span>
+      <span class="pill pill-yes">✓ ทำความสะอาดทั่วไป</span>
+      <span class="pill pill-yes">✓ ภาษาอังกฤษ</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">คติประจำใจ</div>
+    <div class="quote-block">เป้าหมายมีไว้พุ่งชน</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">แนะนำตนเอง</div>
+    <div class="quote-block">นิสัยร่าเริง เข้ากับคนง่าย พร้อมที่จะเรียนรู้งาน</div>
+  </div>
+
+  <div class="sig-section">
+    <div class="sig-statement">ข้าพเจ้าขอรับรองว่าข้อมูลที่ให้ไว้ในใบสมัครนี้เป็นความจริงทุกประการ<br>หากพบในภายหลังว่าข้อมูลเป็นเท็จ ข้าพเจ้ายินยอมให้บริษัทยกเลิกการว่าจ้างได้ทันที</div>
+    <div class="sig-boxes">
+      <div class="sig-box">
+        <div class="sig-space"></div>
+        <div class="sig-line"></div>
+        <div class="sig-caption">ลายมือชื่อผู้สมัคร<br>(น.ส. พรชิตา สุขพราว)</div>
+      </div>
+      <div class="sig-box">
+        <div class="sig-space"></div>
+        <div class="sig-line"></div>
+        <div class="sig-caption">ลายมือชื่อผู้รับสมัคร<br>วันที่ ............................................</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>ร้านยาศรีสุพรรณ · เอกสารลับ</span>
+    <span>ผู้สมัคร 5/6</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════ PAGE 6 -->
+<div class="page" id="page-5">
+  <div class="page-header">
+    <div>
+      <div class="store-name">ร้านยาศรีสุพรรณ</div>
+      <div class="doc-label">ใบสมัครงาน · แบบฟอร์มรายงานผู้สมัคร</div>
+    </div>
+    <div class="header-badge">
+      <div class="app-no">ผู้สมัครลำดับที่ 6</div>
+      <div class="app-date">9 มิถุนายน 2569</div>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-avatar">ม</div>
+    <div>
+      <div class="hero-name">น.ส. รสิภัคฑินันท์ เจริญธีรนันท์</div>
+      <div class="hero-nickname">ชื่อเล่น: มิว</div>
+    </div>
+    <div class="hero-salary">
+      <div class="salary-label">เงินเดือนที่คาดหวัง</div>
+      <div class="salary-val">12,000 บาท</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ข้อมูลส่วนตัว</div>
+    <div class="field-grid">
+      <div class="field"><div class="field-label">วันเดือนปีเกิด</div><div class="field-value">17 พฤษภาคม 2538 (อายุ 31 ปี)</div></div>
+      <div class="field"><div class="field-label">สถานภาพ</div><div class="field-value">โสด · ไม่มีบุตร</div></div>
+      <div class="field"><div class="field-label">วุฒิการศึกษา</div><div class="field-value">มัธยมศึกษาตอนปลาย</div></div>
+      <div class="field"><div class="field-label">ที่อยู่ปัจจุบัน</div><div class="field-value">448/500 ม.8 ต.หนองครก อ.เมือง จ.ศรีสะเกษ 33000</div></div>
+      <div class="field"><div class="field-label">การเดินทาง</div><div class="field-value">รถส่วนตัว</div></div>
+      <div class="field"><div class="field-label">เบอร์โทร</div><div class="field-value mono">098-874-1964</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ผู้ติดต่อฉุกเฉิน</div>
+    <div class="field-grid two-col">
+      <div class="field"><div class="field-label">ชื่อผู้ติดต่อ</div><div class="field-value">นาง ธัญรชนก พรมสอน (บิดา/มารดา)</div></div>
+      <div class="field"><div class="field-label">เบอร์โทร</div><div class="field-value mono">061-515-9666</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ประสบการณ์การทำงาน</div>
+    <div class="exp-block">• ผู้จัดการร้านโกดัง24</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">ทักษะ</div>
+    <div class="skill-row">
+      <span class="pill pill-yes">✓ คอมพิวเตอร์พื้นฐาน</span>
+      <span class="pill pill-yes">✓ Excel / Word</span>
+      <span class="pill pill-yes">✓ ทำความสะอาดทั่วไป</span>
+      <span class="pill pill-yes">✓ ภาษาอังกฤษ</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">คติประจำใจ</div>
+    <div class="quote-block">ซื่อสัตย์ มีวินัย ตรงต่อเวลา</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">แนะนำตนเอง</div>
+    <div class="quote-block">ชื่อมิวนะคะ พร้อมเรียนรู้งานและเติบโตไปพร้อมกันค่ะ</div>
+  </div>
+
+  <div class="sig-section">
+    <div class="sig-statement">ข้าพเจ้าขอรับรองว่าข้อมูลที่ให้ไว้ในใบสมัครนี้เป็นความจริงทุกประการ<br>หากพบในภายหลังว่าข้อมูลเป็นเท็จ ข้าพเจ้ายินยอมให้บริษัทยกเลิกการว่าจ้างได้ทันที</div>
+    <div class="sig-boxes">
+      <div class="sig-box">
+        <div class="sig-space"></div>
+        <div class="sig-line"></div>
+        <div class="sig-caption">ลายมือชื่อผู้สมัคร<br>(น.ส. รสิภัคฑินันท์ เจริญธีรนันท์)</div>
+      </div>
+      <div class="sig-box">
+        <div class="sig-space"></div>
+        <div class="sig-line"></div>
+        <div class="sig-caption">ลายมือชื่อผู้รับสมัคร<br>วันที่ ............................................</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>ร้านยาศรีสุพรรณ · เอกสารลับ</span>
+    <span>ผู้สมัคร 6/6</span>
+  </div>
+</div>
+
+</div><!-- end canvas -->
+
+<script>
+  const TOTAL = 6;
+  let current = 0;
+
+  function showPage(idx) {
+    document.querySelectorAll('.page').forEach((p, i) => {
+      p.classList.toggle('active', i === idx);
+    });
+    document.getElementById('counter').textContent = (idx + 1) + ' / ' + TOTAL;
+    document.getElementById('prevBtn').disabled = idx === 0;
+    document.getElementById('nextBtn').disabled = idx === TOTAL - 1;
+    current = idx;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function navigate(dir) {
+    const next = current + dir;
+    if (next >= 0 && next < TOTAL) showPage(next);
+  }
+
+  function printCurrent() {
+    // Show only current page for print
+    const pages = document.querySelectorAll('.page');
+    pages.forEach((p, i) => {
+      if (i !== current) p.style.display = 'none';
+    });
+    window.print();
+    // Restore
+    pages.forEach((p, i) => {
+      p.style.display = '';
+      if (i === current) p.classList.add('active');
+    });
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') navigate(1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') navigate(-1);
+  });
+
+  showPage(0);
+</script>
+</body>
+</html>
